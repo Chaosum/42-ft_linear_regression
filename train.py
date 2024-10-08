@@ -32,7 +32,7 @@ def main():
         learningRate = 0.01
         m = len(price)
         
-        for iteration in range(numIterations):
+        for _ in range(numIterations):
             sumError = 0
             sumErrorKm = 0
             for i in range(m):
