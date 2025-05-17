@@ -21,7 +21,7 @@ def main():
 
         mileageNormalized = [(x - meanMileage) / stdMileage for x in mileage]
 
-        numIterations = 1000
+        numIterations = 10000
         theta0 = 0.0
         theta1 = 0.0
         try:
@@ -32,8 +32,8 @@ def main():
             print("No gradient file, creating one")
         learningRate = 0.01
         m = len(price)
-        
-        for _ in np.random.permutation(numIterations):
+        prev_cost = float('inf')
+        for _ in range(numIterations):
             sumError = 0
             sumErrorKm = 0
             for i in range(m):
@@ -41,16 +41,14 @@ def main():
                 actualPrice = price[i]
                 prediction = theta0 + theta1 * km
                 error = prediction - actualPrice
-                precision = error
-                if (precision < 0):
-                    precision = precision * -1
+                precision = abs(error)
+
                 sumError += error
                 sumErrorKm += error * km
-                print(str(100 - ((precision * 100) / actualPrice)) + " %")
-                if (100 - ((precision * 100) / actualPrice)) > 99.5:
-                    break
-            if (100 - ((precision * 100) / actualPrice)) > 99.5:
-                print("Precision reached")
+            cost = sum([(theta0 + theta1 * mileageNormalized[i] - price[i]) ** 2 for i in range(m)]) / m
+            prev_cost = cost
+            if abs(prev_cost - cost) < 1e-6:
+                print("Converged")
                 break
             gradientTheta0 = (1/m) * sumError
             gradientTheta1 = (1/m) * sumErrorKm
