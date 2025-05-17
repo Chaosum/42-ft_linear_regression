@@ -1,5 +1,6 @@
 import csv
 import matplotlib.pyplot as plt
+import numpy as np
 
 def main():
     try:
@@ -32,7 +33,7 @@ def main():
         learningRate = 0.01
         m = len(price)
         
-        for _ in range(numIterations):
+        for _ in np.random.permutation(numIterations):
             sumError = 0
             sumErrorKm = 0
             for i in range(m):
@@ -43,10 +44,14 @@ def main():
                 precision = error
                 if (precision < 0):
                     precision = precision * -1
-                print(str(100 - ((precision * 100) / actualPrice)) + " %")
                 sumError += error
                 sumErrorKm += error * km
-
+                print(str(100 - ((precision * 100) / actualPrice)) + " %")
+                if (100 - ((precision * 100) / actualPrice)) > 99.5:
+                    break
+            if (100 - ((precision * 100) / actualPrice)) > 99.5:
+                print("Precision reached")
+                break
             gradientTheta0 = (1/m) * sumError
             gradientTheta1 = (1/m) * sumErrorKm
 
